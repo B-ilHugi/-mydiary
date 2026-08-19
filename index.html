@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>小Bi的碎碎念</title>
+<meta name="theme-color" content="#b4998a" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="小Bi的碎碎念" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="icon.svg" />
+<style>
+  :root {
+    --bg: #f4f1ec;
+    --bg-soft: #ebe7e0;
+    --card: #fbf9f5;
+    --text: #4a4742;
+    --text-soft: #8c877e;
+    --border: #e4dfd6;
+    --accent: #b4998a;
+    --accent-soft: rgba(180, 153, 138, 0.14);
+    --shadow: 0 8px 28px rgba(120, 108, 92, 0.10);
+    --radius: 16px;
+    --font: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7;
+    -webkit-font-smoothing: antialiased; transition: background .4s ease, color .4s ease;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 40px 22px 110px; }
+
+  /* ---------- header ---------- */
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+  .brand h1 { font-size: 28px; font-weight: 600; letter-spacing: 4px; }
+  .brand p { margin-top: 5px; color: var(--text-soft); font-size: 12px; letter-spacing: 1px; }
+  .avatar {
+    width: 44px; height: 44px; border-radius: 50%; cursor: pointer; flex: none;
+    background: var(--accent-soft); color: var(--accent); border: 1px solid var(--border);
+    display: grid; place-items: center; font-size: 17px; font-weight: 600; transition: all .2s ease;
+  }
+  .avatar:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+  /* ---------- stats ---------- */
+  .stats { display: flex; gap: 14px; margin-bottom: 22px; }
+  .stat {
+    flex: 1; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); text-align: center;
+  }
+  .stat .num { font-size: 24px; font-weight: 600; color: var(--accent); }
+  .stat .lbl { font-size: 12px; color: var(--text-soft); margin-top: 2px; letter-spacing: 1px; }
+
+  /* ---------- panel ---------- */
+  .panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow);
+  }
+  .panel-title { font-size: 14px; letter-spacing: 2px; color: var(--text-soft); margin-bottom: 16px; }
+
+  /* ---------- editor (record page) ---------- */
+  .time-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .time-label { font-size: 13px; color: var(--text-soft); }
+  .time-input {
+    border: 1px solid var(--border); background: var(--bg); border-radius: 8px;
+    padding: 7px 10px; font-size: 13px; color: var(--text); font-family: var(--font);
+  }
+  .time-input:focus { outline: none; border-color: var(--accent); }
+  .periods { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+  .period { border: 1px solid var(--border); background: var(--bg-soft); color: var(--text-soft); padding: 6px 11px; border-radius: 999px; font-size: 12px; cursor: pointer; font-family: var(--font); transition: all .15s ease; }
+  .period:hover { color: var(--accent); }
+  .period.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn {
+    border: 1px solid var(--border); background: var(--card); color: var(--text-soft);
+    padding: 8px 14px; border-radius: 999px; font-size: 13px; cursor: pointer; transition: all .2s ease; font-family: var(--font);
+  }
+  .btn:hover { color: var(--accent); border-color: var(--accent); }
+  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn.primary:hover { opacity: .9; color: #fff; }
+  .btn.tiny { padding: 6px 12px; font-size: 12px; }
+  .btn.block { display: block; width: 100%; margin-bottom: 10px; text-align: center; }
+
+  .moods { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .mood {
+    font-size: 20px; width: 40px; height: 40px; display: grid; place-items: center;
+    border-radius: 12px; border: 1px solid var(--border); background: var(--bg-soft);
+    cursor: pointer; transition: all .2s ease;
+  }
+  .mood:hover { transform: translateY(-2px); }
+  .mood.active { border-color: var(--accent); background: var(--accent-soft); }
+
+  #title {
+    width: 100%; border: none; background: transparent; font-size: 18px; font-weight: 600;
+    color: var(--text); font-family: var(--font); padding: 6px 2px;
+    border-bottom: 1px dashed var(--border); margin-bottom: 12px;
+  }
+  #title::placeholder { color: var(--text-soft); font-weight: 400; }
+  #title:focus { outline: none; border-bottom-color: var(--accent); }
+  #content {
+    width: 100%; min-height: 200px; border: none; background: transparent; resize: vertical;
+    font-size: 15px; color: var(--text); font-family: var(--font); line-height: 1.9; padding: 4px 2px;
+  }
+  #content:focus { outline: none; }
+  #content::placeholder { color: var(--text-soft); }
+
+  .draft-imgs { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 4px; }
+  .draft-imgs:empty { display: none; }
+  .thumb { position: relative; width: 76px; height: 76px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-soft); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .thumb .rm { position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; border-radius: 50%; border: none; background: rgba(0,0,0,.5); color: #fff; font-size: 11px; cursor: pointer; line-height: 1; }
+
+  .w-inline {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px;
+    padding: 10px 14px; margin: 10px 0 2px;
+  }
+  .w-inline .wl { font-size: 13px; color: var(--text-soft); }
+  .w-inline .wl b { color: var(--accent); }
+  .w-inline .wl-hint { font-size: 12px; color: var(--accent); }
+  .w-inline input {
+    width: 110px; border: 1px solid var(--border); background: var(--card); border-radius: 8px;
+    padding: 7px 10px; font-size: 14px; color: var(--text); font-family: var(--font);
+  }
+  .w-inline input:focus { outline: none; border-color: var(--accent); }
+  .pdot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: middle; }
+  .w-expect { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .w-expect .w-add-kg { width: 110px; }
+  .w-expect-toggle { border: none; background: transparent; color: var(--text-soft); cursor: pointer; font-size: 13px; padding: 6px 2px; font-family: var(--font); }
+  .w-expect-toggle:hover { color: var(--accent); }
+  .w-expect-body { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .set-input { width: 100%; box-sizing: border-box; border: 1px solid var(--border); background: var(--bg); border-radius: 10px; padding: 9px 12px; font-size: 13px; color: var(--text); font-family: var(--font); margin-bottom: 8px; }
+  .set-input:focus { outline: none; border-color: var(--accent); }
+  .w-tbl { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+  .w-tbl th, .w-tbl td { border: 1px solid var(--border); padding: 8px 6px; text-align: center; }
+  .w-tbl th { background: var(--bg-soft); color: var(--text-soft); font-weight: 600; font-size: 12px; }
+  .w-tbl td.w-date { text-align: left; color: var(--text-soft); white-space: nowrap; }
+  .w-tbl .w-cell { cursor: pointer; color: var(--accent); font-weight: 600; }
+  .w-tbl .w-cell.empty { color: var(--text-soft); font-weight: 400; }
+  .w-tbl .w-cell:hover { background: var(--accent-soft); }
+  .w-tbl .w-cell.editing { background: var(--bg); cursor: default; }
+  .w-tbl .w-edit-input { width: 64px; border: 1px solid var(--accent); background: var(--card); border-radius: 7px; padding: 5px 6px; font-size: 13px; color: var(--text); font-family: var(--font); text-align: center; }
+  .w-tbl .w-edit-input:focus { outline: none; }
+  .w-tbl .w-edit-btns { display: flex; gap: 4px; justify-content: center; margin-top: 4px; }
+
+  .editor-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); gap: 10px; flex-wrap: wrap;
+  }
+  .foot-left { display: flex; align-items: center; gap: 10px; }
+  .foot-right { display: flex; align-items: center; gap: 10px; }
+  .count { font-size: 12px; color: var(--text-soft); }
+  .hint { font-size: 11px; color: var(--text-soft); }
+
+  /* ---------- search & list (past page) ---------- */
+  .search {
+    width: 100%; border: 1px solid var(--border); background: var(--bg);
+    border-radius: 999px; padding: 11px 18px; font-size: 14px; color: var(--text);
+    font-family: var(--font); margin-bottom: 16px;
+  }
+  .search:focus { outline: none; border-color: var(--accent); }
+
+  .day-group { margin-bottom: 14px; }
+  .day-label { font-size: 12px; color: var(--text-soft); letter-spacing: 1px; margin: 14px 2px 10px; display: flex; align-items: center; gap: 8px; }
+  .day-label::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+  .note { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; transition: all .2s ease; position: relative; }
+  .note:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .note .meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-soft); margin-bottom: 6px; padding-right: 64px; }
+  .note .mood-tag { font-size: 15px; }
+  .note .title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .note .body { font-size: 14px; color: var(--text); white-space: pre-wrap; word-break: break-word; max-height: 320px; overflow: hidden; }
+  .note .ops { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; opacity: .45; transition: opacity .2s ease; }
+  .note:hover .ops { opacity: 1; }
+  .op { border: none; background: var(--card); color: var(--text-soft); width: 28px; height: 28px; border-radius: 8px; cursor: pointer; font-size: 13px; border: 1px solid var(--border); }
+  .op:hover { color: var(--accent); border-color: var(--accent); }
+  .op.del:hover { color: #c97a6d; border-color: #c97a6d; }
+
+  /* 就地编辑态 */
+  .note.editing { background: var(--card); }
+  .edit-title {
+    width: 100%; border: 1px solid var(--border); background: var(--bg); border-radius: 8px;
+    padding: 9px 12px; font-size: 15px; font-weight: 600; color: var(--text); font-family: var(--font); margin: 8px 0;
+  }
+  .edit-title:focus { outline: none; border-color: var(--accent); }
+  .edit-body {
+    width: 100%; min-height: 130px; border: 1px solid var(--border); background: var(--bg); border-radius: 10px;
+    padding: 10px 12px; font-size: 14px; color: var(--text); font-family: var(--font); line-height: 1.8; resize: vertical;
+  }
+  .edit-body:focus { outline: none; border-color: var(--accent); }
+  .edit-foot { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
+
+  .edit-time { display: flex; align-items: center; gap: 10px; margin: 6px 0; flex-wrap: wrap; }
+  .edit-time .el { font-size: 13px; color: var(--text-soft); }
+  .edit-time-input { border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 7px 10px; font-size: 13px; color: var(--text); font-family: var(--font); }
+  .edit-time-input:focus { outline: none; border-color: var(--accent); }
+  .edit-weight { display: flex; align-items: center; gap: 10px; margin: 6px 0 10px; flex-wrap: wrap; }
+  .edit-weight .el { font-size: 13px; color: var(--text-soft); }
+  .edit-weight-input { width: 90px; border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 7px 10px; font-size: 14px; color: var(--text); font-family: var(--font); }
+  .edit-weight-input:focus { outline: none; border-color: var(--accent); }
+
+  .imgs { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin: 4px 0 10px; }
+  .note-img { width: 100%; height: 110px; object-fit: cover; border-radius: 10px; cursor: zoom-in; border: 1px solid var(--border); transition: opacity .2s; }
+  .note-img:hover { opacity: .88; }
+
+  .empty { text-align: center; color: var(--text-soft); padding: 50px 20px; font-size: 14px; }
+  .empty .big { font-size: 38px; margin-bottom: 12px; opacity: .5; }
+
+  /* ---------- tab bar ---------- */
+  .tabbar {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+    display: inline-flex; gap: 6px; align-items: center;
+    background: var(--card); border: 1px solid var(--border);
+    padding: 6px; border-radius: 999px;
+    box-shadow: 0 10px 34px rgba(0,0,0,0.10); z-index: 30;
+  }
+  .tab {
+    display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+    border: none; background: transparent; color: var(--text-soft);
+    padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    font-size: 14px; font-family: var(--font); transition: all .2s;
+  }
+  .tab .ic { font-size: 15px; line-height: 1; }
+  .tab.active { background: var(--accent); color: #fff; }
+
+  /* ---------- weight page ---------- */
+  .w-filter { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .w-periods { display: inline-flex; gap: 5px; flex-wrap: wrap; }
+  .w-pf {
+    border: 1px solid var(--border); background: var(--accent-soft); color: var(--text-soft);
+    padding: 5px 13px; border-radius: 999px; font-size: 12px; cursor: pointer; font-family: var(--font);
+    opacity: .5; transition: all .15s ease;
+  }
+  .w-pf:hover { opacity: .85; color: var(--accent); }
+  .w-pf.active { opacity: 1; background: var(--accent); color: #fff; border-color: var(--accent); }
+  .w-range { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .w-range-date { border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 5px 8px; font-size: 12px; color: var(--text); font-family: var(--font); }
+  .w-range-date:focus { outline: none; border-color: var(--accent); }
+  .w-dash { color: var(--text-soft); }
+
+  /* ---------- settings drawer ---------- */
+  .drawer {
+    position: fixed; inset: 0; background: rgba(40,38,34,.32);
+    display: flex; justify-content: flex-end; opacity: 0; pointer-events: none; transition: opacity .3s ease; z-index: 40;
+  }
+  .drawer.show { opacity: 1; pointer-events: auto; }
+  .drawer-card {
+    width: 340px; max-width: 90vw; height: 100%; background: var(--card);
+    border-left: 1px solid var(--border); padding: 26px 22px; overflow-y: auto;
+    transform: translateX(30px); transition: transform .3s ease; box-shadow: -10px 0 40px rgba(0,0,0,.12);
+  }
+  .drawer.show .drawer-card { transform: translateX(0); }
+  .drawer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+  .drawer-head .t { font-size: 15px; letter-spacing: 2px; color: var(--text-soft); }
+  .set-sec { margin-bottom: 24px; }
+  .set-label { font-size: 12px; color: var(--text-soft); letter-spacing: 1px; margin-bottom: 10px; }
+  .theme-dots { display: flex; gap: 12px; flex-wrap: wrap; }
+  .dot { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform .15s ease; }
+  .dot:hover { transform: scale(1.12); }
+  .dot.active { border-color: var(--text); }
+
+  .chart { width: 100%; height: auto; margin: 4px 0 12px; background: var(--bg); border-radius: 12px; border: 1px solid var(--border); }
+  .chart polyline { fill: none; }
+  .chart circle { }
+  .w-item { display: flex; justify-content: space-between; font-size: 13px; padding: 7px 2px; border-bottom: 1px dashed var(--border); color: var(--text); }
+  .w-item span:last-child { color: var(--accent); }
+
+  .w-summary { display: flex; gap: 10px; }
+  .w-summary > div { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 6px; text-align: center; }
+  .w-summary .num { font-size: 20px; font-weight: 600; color: var(--accent); }
+  .w-summary .lbl { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
+  .w-add { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .w-add .periods { flex-wrap: nowrap; }
+  .w-add .period { padding: 5px 9px; font-size: 11px; white-space: nowrap; }
+  .w-add-date { width: 120px; flex: 0 0 auto; border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 8px 10px; font-size: 13px; color: var(--text); font-family: var(--font); }
+  .w-add-kg { width: 64px; border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 8px 10px; font-size: 13px; color: var(--text); font-family: var(--font); }
+  .w-add-date:focus, .w-add-kg:focus { outline: none; border-color: var(--accent); }
+  .w-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; padding: 9px 2px; border-bottom: 1px dashed var(--border); }
+  .w-row .w-kg { color: var(--accent); font-weight: 600; }
+  .w-row .w-del { border: none; background: transparent; color: var(--text-soft); cursor: pointer; font-size: 14px; padding: 2px 6px; }
+  .w-row .w-del:hover { color: #c97a6d; }
+  .w-row .w-ops { display: inline-flex; gap: 2px; }
+  .w-row .op { border: none; background: transparent; color: var(--text-soft); cursor: pointer; font-size: 14px; padding: 2px 6px; }
+  .w-row .op:hover { color: var(--accent); }
+  .w-row .op.del:hover { color: #c97a6d; }
+  .w-row.editing { flex-wrap: wrap; gap: 8px; align-items: center; }
+  .w-row .e-date { border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 6px 8px; font-size: 13px; color: var(--text); font-family: var(--font); }
+  .w-row .e-kg { width: 74px; border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 6px 8px; font-size: 13px; color: var(--text); font-family: var(--font); }
+  .w-row .e-date:focus, .w-row .e-kg:focus { outline: none; border-color: var(--accent); }
+  .wpt { cursor: pointer; }
+  .w-tip { position: fixed; z-index: 80; background: var(--text); color: var(--bg); padding: 6px 11px; border-radius: 10px; font-size: 12px; pointer-events: none; opacity: 0; transform: translate(-50%, -8px); transition: opacity .15s; white-space: nowrap; box-shadow: var(--shadow); }
+  .w-tip.show { opacity: 1; }
+
+  /* ---------- overlay ---------- */
+  .overlay { position: fixed; inset: 0; background: rgba(20,18,16,.88); display: none; align-items: center; justify-content: center; z-index: 60; padding: 30px; cursor: zoom-out; }
+  .overlay.show { display: flex; }
+  .overlay img { max-width: 92%; max-height: 92%; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.5); cursor: default; }
+
+  .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: var(--bg); padding: 11px 22px; border-radius: 999px; font-size: 13px; opacity: 0; pointer-events: none; transition: all .3s ease; z-index: 70; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1 id="brandTitle">标题</h1>
+      <p id="brandSub">随手记录，此刻的心情与日常</p>
+    </div>
+    <div class="avatar" id="avatarBtn" title="设置">小</div>
+  </header>
+
+  <!-- page: record -->
+  <div id="page-record">
+    <div class="stats">
+      <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">共记录</div></div>
+      <div class="stat"><div class="num" id="statStreak">0</div><div class="lbl">连续天数</div></div>
+      <div class="stat"><div class="num" id="statWords">0</div><div class="lbl">累计字数</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title" id="editorMode">写点什么</div>
+      <div class="time-row">
+        <span class="time-label">🕐 时间</span>
+        <input type="date" id="dateInput" class="time-input" />
+        <span class="periods" id="periods">
+          <button type="button" class="period" data-p="lingchen">凌晨</button>
+          <button type="button" class="period" data-p="shangwu">上午</button>
+          <button type="button" class="period" data-p="xiawu">下午</button>
+          <button type="button" class="period" data-p="wanshang">晚上</button>
+        </span>
+        <button class="btn tiny" id="timeNow">此刻</button>
+      </div>
+      <div class="moods" id="moods"></div>
+      <input id="title" type="text" placeholder="标题" />
+      <textarea id="content" placeholder="这一刻，你在想什么……"></textarea>
+      <div class="draft-imgs" id="draftImgs"></div>
+      <div class="w-inline">
+        <span class="wl">⚖️ 体重</span>
+        <input id="wInlineInput" type="number" step="0.1" min="0" placeholder="kg" />
+        <span class="wl-hint" id="wInlineLabel"></span>
+      </div>
+      <div class="editor-foot">
+        <span class="foot-left">
+          <button class="btn" id="imgBtn">📷 图片</button>
+          <span class="count" id="count">0 字</span>
+        </span>
+        <span class="foot-right">
+          <span class="hint">Ctrl/⌘ + Enter 保存</span>
+          <button class="btn primary" id="saveBtn">保存</button>
+          <button class="btn" id="cancelEdit" style="display:none">取消</button>
+        </span>
+      </div>
+      <input type="file" id="imgInput" accept="image/*" multiple hidden />
+    </div>
+  </div>
+
+  <!-- page: past -->
+  <div id="page-past" style="display:none">
+    <div class="panel">
+      <div class="panel-title">过往</div>
+      <input class="search" id="search" type="text" placeholder="搜索碎碎念…" />
+      <div id="list"></div>
+    </div>
+  </div>
+
+  <!-- page: weight -->
+  <div id="page-weight" style="display:none">
+    <div class="panel">
+      <div class="panel-title">体重</div>
+      <div class="w-summary">
+        <div><div class="num" id="wLatest">--</div><div class="lbl">最新 kg</div></div>
+        <div><div class="num" id="wChange">--</div><div class="lbl">较上次</div></div>
+        <div><div class="num" id="wCount">0</div><div class="lbl">累计条</div></div>
+      </div>
+      <div class="set-label" style="margin-top:18px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span>体重时间折线图</span>
+        <div class="w-expect-inline" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <button class="w-expect-toggle" id="wExpectToggle">⚙ 设置预期体重</button>
+          <div class="w-expect-body" id="wExpectBody" style="display:none">
+            <input type="number" step="0.1" min="0" id="wExpectInput" class="w-add-kg" placeholder="目标 kg" />
+            <button class="btn primary" id="wExpectBtn">设定</button>
+            <button class="btn tiny" id="wExpectClear">清除</button>
+          </div>
+        </div>
+      </div>
+      <div class="w-filter">
+        <div class="w-periods" id="wChartPeriods">
+          <button type="button" class="w-pf active" data-p="all">全部</button>
+          <button type="button" class="w-pf" data-p="lingchen"><i class="pdot" style="background:#8a9bb5"></i>凌晨</button>
+          <button type="button" class="w-pf" data-p="shangwu"><i class="pdot" style="background:#8fae84"></i>上午</button>
+          <button type="button" class="w-pf" data-p="xiawu"><i class="pdot" style="background:#c9a36a"></i>下午</button>
+          <button type="button" class="w-pf" data-p="wanshang"><i class="pdot" style="background:#b58aa0"></i>晚上</button>
+        </div>
+        <div class="w-range">
+          <input type="date" id="wRangeStart" class="w-range-date" />
+          <span class="w-dash">—</span>
+          <input type="date" id="wRangeEnd" class="w-range-date" />
+          <button class="btn tiny" id="wRangeReset">全部时间</button>
+        </div>
+      </div>
+      <div id="weightChartFull"></div>
+      <div class="set-label" style="margin-top:18px">记一条</div>
+      <div class="w-add">
+        <input type="date" id="wAddDate" class="w-add-date" />
+        <span class="periods" id="wAddPeriods">
+          <button type="button" class="period" data-p="lingchen">凌晨</button>
+          <button type="button" class="period" data-p="shangwu">上午</button>
+          <button type="button" class="period" data-p="xiawu">下午</button>
+          <button type="button" class="period" data-p="wanshang">晚上</button>
+        </span>
+        <input type="number" step="0.1" min="0" id="wAddKg" class="w-add-kg" placeholder="kg" />
+        <button class="btn primary" id="wAddBtn">记一下</button>
+      </div>
+      <div class="set-label" style="margin-top:18px">详细记录</div>
+      <div id="weightTableFull"></div>
+    </div>
+  </div>
+</div>
+
+<!-- bottom tab bar -->
+<nav class="tabbar">
+  <button class="tab active" data-page="record"><span class="ic">✏️</span>记录</button>
+  <button class="tab" data-page="past"><span class="ic">📚</span>过往</button>
+  <button class="tab" data-page="weight"><span class="ic">⚖️</span>体重</button>
+</nav>
+
+<!-- settings drawer -->
+<div class="drawer" id="setDrawer">
+  <div class="drawer-card">
+    <div class="drawer-head">
+      <span class="t">设置</span>
+      <button class="op" id="setClose">✕</button>
+    </div>
+    <div class="set-sec">
+      <div class="set-label">标题</div>
+      <input id="setTitle" class="set-input" type="text" maxlength="20" placeholder="标题" />
+      <div class="set-label" style="margin-top:12px">签名</div>
+      <input id="setSub" class="set-input" type="text" maxlength="40" placeholder="签名" />
+    </div>
+    <div class="set-sec">
+      <div class="set-label">主题</div>
+      <div class="theme-dots" id="themeDots"></div>
+    </div>
+    <div class="set-sec">
+      <div class="set-label">数据</div>
+      <button class="btn block" id="exportBtn">导出备份</button>
+      <button class="btn block" id="importBtn">导入备份</button>
+      <input type="file" id="importFile" accept="application/json" hidden />
+    </div>
+  </div>
+</div>
+
+<!-- image overlay -->
+<div class="overlay" id="overlay"><img id="overlayImg" src="" alt="" /></div>
+<div id="wTip" class="w-tip"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  const STORE_KEY = "suisui.notes.v1";
+  const SET_KEY = "suisui.settings.v1";
+  const WEIGHT_KEY = "suisui.weight.v1";
+
+  const THEMES = {
+    chenwu: { name: "晨雾", vars: { "--bg":"#f4f1ec","--bg-soft":"#ebe7e0","--card":"#fbf9f5","--text":"#4a4742","--text-soft":"#8c877e","--border":"#e4dfd6","--accent":"#b4998a","--accent-soft":"rgba(180,153,138,0.14)","--shadow":"0 8px 28px rgba(120,108,92,0.10)" } },
+    daiyun: { name: "黛蓝", vars: { "--bg":"#eef1f3","--bg-soft":"#e3e8ec","--card":"#fafbfc","--text":"#454b52","--text-soft":"#8995a0","--border":"#dde3e8","--accent":"#7f97ab","--accent-soft":"rgba(127,151,171,0.14)","--shadow":"0 8px 28px rgba(90,110,130,0.10)" } },
+    doulu:  { name: "豆绿", vars: { "--bg":"#edf1ec","--bg-soft":"#e1e8e1","--card":"#fafbf8","--text":"#454b45","--text-soft":"#8a948a","--border":"#dce3db","--accent":"#8fa68f","--accent-soft":"rgba(143,166,143,0.14)","--shadow":"0 8px 28px rgba(95,120,95,0.10)" } },
+    oufen:  { name: "藕粉", vars: { "--bg":"#f3efee","--bg-soft":"#ebe3e1","--card":"#fbf8f7","--text":"#4e4644","--text-soft":"#938785","--border":"#e7dfdc","--accent":"#c19ba0","--accent-soft":"rgba(193,155,160,0.14)","--shadow":"0 8px 28px rgba(130,105,110,0.10)" } },
+    mohui:  { name: "墨灰", vars: { "--bg":"#f5f5f5","--bg-soft":"#ececec","--card":"#ffffff","--text":"#2e2e2e","--text-soft":"#8a8a8a","--border":"#e3e3e3","--accent":"#6b6b6b","--accent-soft":"rgba(107,107,107,0.10)","--shadow":"0 8px 28px rgba(0,0,0,0.06)" } },
+    suhui:  { name: "素灰", vars: { "--bg":"#f7f7f7","--bg-soft":"#ededed","--card":"#ffffff","--text":"#111111","--text-soft":"#888888","--border":"#e2e2e2","--accent":"#222222","--accent-soft":"rgba(0,0,0,0.05)","--shadow":"0 8px 28px rgba(0,0,0,0.06)" } },
+    yemo:   { name: "夜墨", vars: { "--bg":"#26262a","--bg-soft":"#303036","--card":"#323238","--text":"#dcD9d2","--text-soft":"#9a958c","--border":"#42424a","--accent":"#a89c8e","--accent-soft":"rgba(168,156,142,0.16)","--shadow":"0 8px 28px rgba(0,0,0,0.30)" } }
+  };
+
+  const MOODS = ["😊","☺️","😌","🥲","😴","🌿","✨","💭"];
+
+  // ---------- state ----------
+  let notes = load(STORE_KEY, []);
+  let weightData = load(WEIGHT_KEY, []);
+  weightData = weightData.map((d) => (d && d.period ? d : Object.assign({ period: "shangwu" }, d)));
+  let settings = load(SET_KEY, {});
+  let editingId = null;          // 记录页新写时的编辑态（预留）
+  let currentMood = null;
+  let draftImages = [];
+  let inlineEditId = null;       // 过往页就地编辑的 note id
+  let currentPeriod = null;      // 当前选中的时段（凌晨/上午/下午/晚上）
+
+  // ---------- dom ----------
+  const $ = (s) => document.querySelector(s);
+  const titleEl = $("#title");
+  const contentEl = $("#content");
+  const countEl = $("#count");
+  const listEl = $("#list");
+  const searchEl = $("#search");
+  const moodsEl = $("#moods");
+  const cancelEditBtn = $("#cancelEdit");
+  const editorMode = $("#editorMode");
+  const draftImgsEl = $("#draftImgs");
+  const dateInput = $("#dateInput");
+
+  // ---------- helpers ----------
+  function load(key, def) { try { return JSON.parse(localStorage.getItem(key)) || def; } catch (e) { return def; } }
+  function persist(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); return true; }
+    catch (e) { if (e && e.name === "QuotaExceededError") { toast("本地空间不足，图片太多啦，导份备份后清理一些吧"); return false; } return false; }
+  }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  function dateKey(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function fmtTime(d) { return pad(d.getHours()) + ":" + pad(d.getMinutes()); }
+  const PERIODS = [
+    { key: "lingchen", label: "凌晨", hour: 3 },
+    { key: "shangwu", label: "上午", hour: 9 },
+    { key: "xiawu", label: "下午", hour: 15 },
+    { key: "wanshang", label: "晚上", hour: 21 }
+  ];
+  function periodByHour(h) { if (h < 6) return "lingchen"; if (h < 12) return "shangwu"; if (h < 18) return "xiawu"; return "wanshang"; }
+  function periodMeta(key) { return PERIODS.find((p) => p.key === key) || PERIODS[1]; }
+  function tsToPeriodKey(ts) { return periodByHour(new Date(ts).getHours()); }
+  function combine(dateStr, periodKey) {
+    const p = periodMeta(periodKey);
+    const base = dateStr ? new Date(dateStr + "T" + pad(p.hour) + ":00:00") : new Date();
+    return isNaN(base.getTime()) ? Date.now() : base.getTime();
+  }
+  // 生成带「具体时间点」的时间戳：
+  // 今天 → 用真正的当前时分秒；补记（非今天）→ 该时段代表小时 + 当前分秒，保证落在所选时段内
+  function buildCreatedAt(dateStr, periodKey) {
+    const now = new Date();
+    const base = new Date(dateStr + "T00:00:00");
+    if (isNaN(base.getTime())) return Date.now();
+    if (dateKey(base) === dateKey(now)) {
+      base.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), 0);
+    } else {
+      const p = periodMeta(periodKey);
+      base.setHours(p.hour, now.getMinutes(), now.getSeconds(), 0);
+    }
+    return base.getTime();
+  }
+  function syncPeriodButtons() {
+    document.querySelectorAll("#periods .period").forEach((b) => b.classList.toggle("active", b.dataset.p === currentPeriod));
+  }
+  function setPeriod(key) {
+    currentPeriod = key;
+    syncPeriodButtons();
+    renderWeightInline();
+  }
+  function cmpWeight(a, b) {
+    if (a.date !== b.date) return a.date < b.date ? -1 : 1;
+    const ai = PERIODS.findIndex((p) => p.key === a.period);
+    const bi = PERIODS.findIndex((p) => p.key === b.period);
+    return ai - bi;
+  }
+  function esc(s) { return (s || "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+  function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(t._timer); t._timer = setTimeout(() => t.classList.remove("show"), 1600); }
+  function toLocalInput(ts) {
+    const d = new Date(ts);
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 16);
+  }
+  function fromLocalInput(str) { return str ? new Date(str).getTime() : Date.now(); }
+  function imgHtml(arr) {
+    if (!arr || !arr.length) return "";
+    let h = '<div class="imgs">';
+    arr.forEach((s) => { h += '<img class="note-img" src="' + s + '">'; });
+    return h + "</div>";
+  }
+
+  // ---------- theme ----------
+  function applyTheme(key) {
+    const t = THEMES[key] || THEMES.chenwu;
+    Object.keys(t.vars).forEach((k) => document.documentElement.style.setProperty(k, t.vars[k]));
+    settings.theme = key; persist(SET_KEY, settings);
+    document.querySelectorAll(".dot").forEach((d) => d.classList.toggle("active", d.dataset.key === key));
+    const tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.setAttribute("content", t.vars["--accent"]);
+  }
+  function applyBrand() {
+    $("#brandTitle").textContent = settings.title || "标题";
+    $("#brandSub").textContent = settings.sub || "随手记录，此刻的心情与日常";
+  }
+  function buildThemeDots() {
+    const box = $("#themeDots");
+    Object.keys(THEMES).forEach((key) => {
+      const t = THEMES[key];
+      const dot = document.createElement("div");
+      dot.className = "dot"; dot.dataset.key = key; dot.title = t.name;
+      dot.style.background = t.vars["--accent"];
+      dot.addEventListener("click", () => applyTheme(key));
+      box.appendChild(dot);
+    });
+  }
+
+  // ---------- moods ----------
+  function buildMoods() {
+    MOODS.forEach((m) => {
+      const el = document.createElement("div");
+      el.className = "mood"; el.textContent = m;
+      el.addEventListener("click", () => {
+        if (currentMood === m) { currentMood = null; el.classList.remove("active"); }
+        else { currentMood = m; document.querySelectorAll(".mood").forEach((x) => x.classList.remove("active")); el.classList.add("active"); }
+      });
+      moodsEl.appendChild(el);
+    });
+  }
+
+  // ---------- image ----------
+  function compressImage(file) {
+    return new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const MAX = 1100; let w = img.width, h = img.height;
+          if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+          const canvas = document.createElement("canvas"); canvas.width = w; canvas.height = h;
+          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+          res(canvas.toDataURL("image/jpeg", 0.82));
+        };
+        img.onerror = rej; img.src = e.target.result;
+      };
+      reader.onerror = rej; reader.readAsDataURL(file);
+    });
+  }
+  function renderDraftImgs() {
+    draftImgsEl.innerHTML = "";
+    draftImages.forEach((src, i) => {
+      const t = document.createElement("div"); t.className = "thumb";
+      t.innerHTML = '<img src="' + src + '"><button class="rm" title="移除">✕</button>';
+      t.querySelector(".rm").addEventListener("click", () => { draftImages.splice(i, 1); renderDraftImgs(); });
+      draftImgsEl.appendChild(t);
+    });
+  }
+  async function handleImgSelect(files) {
+    for (const f of files) {
+      if (!f.type.startsWith("image/")) continue;
+      try { draftImages.push(await compressImage(f)); } catch (e) {}
+    }
+    renderDraftImgs();
+  }
+
+  // ---------- record editor ----------
+  function updateCount() { countEl.textContent = contentEl.value.trim().length + " 字"; }
+  function resetEditor() {
+    editingId = null; currentMood = null; draftImages = [];
+    titleEl.value = ""; contentEl.value = "";
+    const now = new Date();
+    dateInput.value = dateKey(now);
+    currentPeriod = periodByHour(now.getHours());
+    syncPeriodButtons();
+    updateCount(); renderDraftImgs();
+    document.querySelectorAll(".mood").forEach((x) => x.classList.remove("active"));
+    cancelEditBtn.style.display = "none"; editorMode.textContent = "写点什么";
+    $("#wInlineInput").value = "";
+    renderWeightInline();
+  }
+  function saveNote() {
+    const content = contentEl.value.trim();
+    if (!content && draftImages.length === 0) { toast("写点什么或加张图再保存吧"); contentEl.focus(); return; }
+    const title = titleEl.value.trim();
+    const ts = buildCreatedAt(dateInput.value, currentPeriod);
+    const dateStr = dateKey(new Date(ts));
+    notes.unshift({ id: uid(), title: title, content: content, mood: currentMood, images: draftImages.slice(), createdAt: ts });
+    const wv = parseFloat($("#wInlineInput").value);
+    if (wv && wv > 0) {
+      const ex = weightData.find((d) => d.date === dateStr && d.period === currentPeriod);
+      if (ex) ex.kg = wv; else weightData.push({ date: dateStr, period: currentPeriod, kg: wv });
+      weightData.sort(cmpWeight);
+      persist(WEIGHT_KEY, weightData);
+    }
+    persist(STORE_KEY, notes); resetEditor(); render(); renderWeightInline(); toast("已记下");
+  }
+  function deleteNote(id) {
+    if (!confirm("确定删除这条碎碎念吗？")) return;
+    notes = notes.filter((x) => x.id !== id); persist(STORE_KEY, notes);
+    if (inlineEditId === id) inlineEditId = null;
+    render(); toast("已删除");
+  }
+
+  // ---------- inline edit (past page) ----------
+  function saveInline(id) {
+    const card = listEl.querySelector('.note.editing[data-id="' + id + '"]');
+    if (!card) return;
+    const n = notes.find((x) => x.id === id);
+    if (!n) return;
+    const title = card.querySelector(".edit-title").value.trim();
+    const content = card.querySelector(".edit-body").value.trim();
+    if (!content) { toast("内容不能为空"); return; }
+    const dateVal = card.querySelector(".edit-date-input").value;
+    const activePer = card.querySelector(".period.active");
+    const periodKey = activePer ? activePer.dataset.p : tsToPeriodKey(n.createdAt);
+    const ts = buildCreatedAt(dateVal, periodKey);
+    n.title = title; n.content = content; n.createdAt = ts;
+    inlineEditId = null;
+    persist(STORE_KEY, notes); render(); toast("已更新");
+  }
+
+  // ---------- list ----------
+  function computeStats() {
+    $("#statTotal").textContent = notes.length;
+    $("#statWords").textContent = notes.reduce((s, n) => s + (n.content || "").length, 0);
+    const days = new Set(notes.map((n) => dateKey(new Date(n.createdAt))));
+    let streak = 0;
+    if (days.size) {
+      const sorted = Array.from(days).sort();
+      const cur = new Date(sorted[sorted.length - 1] + "T00:00:00");
+      while (days.has(dateKey(cur))) { streak++; cur.setDate(cur.getDate() - 1); }
+    }
+    $("#statStreak").textContent = streak;
+  }
+  function dayLabel(key) {
+    const today = dateKey(new Date()); const y = new Date(); y.setDate(y.getDate() - 1);
+    if (key === today) return "今天";
+    if (key === dateKey(y)) return "昨天";
+    const d = new Date(key.replace(/-/g, "/"));
+    return (d.getMonth() + 1) + "月" + d.getDate() + "日";
+  }
+  function render() {
+    computeStats();
+    const q = searchEl.value.trim().toLowerCase();
+    let data = notes.slice().sort((a, b) => b.createdAt - a.createdAt);
+    if (q) data = data.filter((n) => (n.content || "").toLowerCase().includes(q) || (n.title || "").toLowerCase().includes(q));
+    if (data.length === 0) {
+      listEl.innerHTML = '<div class="empty"><div class="big">🌱</div>' + (q ? "没有匹配的碎碎念" : "还没有记录，去「记录」写第一条吧") + "</div>";
+      return;
+    }
+    const groups = {};
+    data.forEach((n) => { const k = dateKey(new Date(n.createdAt)); (groups[k] = groups[k] || []).push(n); });
+    const keys = Object.keys(groups).sort((a, b) => (a < b ? 1 : -1));
+    let html = "";
+    keys.forEach((k) => {
+      html += '<div class="day-group"><div class="day-label">' + dayLabel(k) + "</div>";
+      groups[k].forEach((n) => {
+        const d = new Date(n.createdAt);
+        const moodHtml = n.mood ? '<span class="mood-tag">' + n.mood + "</span>" : "";
+        if (n.id === inlineEditId) {
+          const wVal = (weightData.find((dd) => dd.date === dateKey(new Date(n.createdAt)) && dd.period === tsToPeriodKey(n.createdAt)) || {}).kg || "";
+          html += '<div class="note editing" data-id="' + n.id + '">' +
+            '<div class="meta">' + moodHtml + "<span>编辑中</span></div>" +
+            imgHtml(n.images) +
+            '<div class="edit-time"><span class="el">🕐 时间</span><input type="date" class="edit-date-input" value="' + dateKey(new Date(n.createdAt)) + '"><span class="periods">' + PERIODS.map((p) => '<button type="button" class="period' + (p.key === tsToPeriodKey(n.createdAt) ? " active" : "") + '" data-p="' + p.key + '">' + p.label + "</button>").join("") + "</span></div>" +
+            '<input class="edit-title" value="' + esc(n.title || "") + '" placeholder="标题">' +
+            '<textarea class="edit-body">' + esc(n.content || "") + "</textarea>" +
+            '<div class="edit-weight"><span class="el">⚖️ 体重</span><input type="number" step="0.1" min="0" class="edit-weight-input" value="' + wVal + '" placeholder="kg"><button class="btn tiny" data-act="wedit" data-id="' + n.id + '">记一下</button></div>' +
+            '<div class="edit-foot">' +
+              '<button class="btn" data-act="cancel" data-id="' + n.id + '">取消</button>' +
+              '<button class="btn primary" data-act="save" data-id="' + n.id + '">保存</button>' +
+            "</div></div>";
+        } else {
+          const titleHtml = n.title ? '<div class="title">' + esc(n.title) + "</div>" : "";
+          html += '<div class="note">' +
+            '<div class="ops"><button class="op" data-act="edit" data-id="' + n.id + '">✎</button><button class="op del" data-act="del" data-id="' + n.id + '">🗑</button></div>' +
+            '<div class="meta">' + moodHtml + "<span>" + periodMeta(tsToPeriodKey(n.createdAt)).label + " " + fmtTime(d) + "</span></div>" +
+            imgHtml(n.images) + titleHtml + '<div class="body">' + esc(n.content) + "</div></div>";
+        }
+      });
+      html += "</div>";
+    });
+    listEl.innerHTML = html;
+    if (inlineEditId) {
+      const ta = listEl.querySelector('.note.editing .edit-body');
+      if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+    }
+  }
+
+  // ---------- image overlay ----------
+  function openOverlay(src) { $("#overlayImg").src = src; $("#overlay").classList.add("show"); }
+  function closeOverlay() { $("#overlay").classList.remove("show"); $("#overlayImg").src = ""; }
+
+  // ---------- weight ----------
+  function renderWeightInline() {
+    const dateStr = dateInput.value || dateKey(new Date());
+    const t = weightData.find((d) => d.date === dateStr && d.period === currentPeriod);
+    $("#wInlineLabel").innerHTML = t ? "当日已记 <b>" + t.kg + " kg</b>" : "当日体重";
+    $("#wInlineInput").value = t ? t.kg : "";
+  }
+  // ---------- weight page ----------
+  let wPeriodSel = { lingchen: true, shangwu: true, xiawu: true, wanshang: true };
+  let wRangeStart = "";
+  let wRangeEnd = "";
+  let wAddPeriod = "shangwu";
+  let expectWeight = settings.expectWeight || null;
+  let wEditKey = null;          // 体重详细记录就地编辑的 date|period
+  let wCellEdit = null;         // 体重表格单元格编辑的 date|period
+  const PERIOD_COLORS = { lingchen: "#8a9bb5", shangwu: "#8fae84", xiawu: "#c9a36a", wanshang: "#b58aa0" };
+  function filterWeight(arr) {
+    let out = arr.slice().filter((d) => wPeriodSel[d.period]);
+    if (wRangeStart) out = out.filter((d) => d.date >= wRangeStart);
+    if (wRangeEnd) out = out.filter((d) => d.date <= wRangeEnd);
+    return out.sort(cmpWeight);
+  }
+  function syncChartPeriods() {
+    document.querySelectorAll("#wChartPeriods .w-pf").forEach((b) => {
+      const p = b.dataset.p;
+      const on = p === "all" ? PERIODS.every((pp) => wPeriodSel[pp.key]) : wPeriodSel[p];
+      b.classList.toggle("active", on);
+    });
+  }
+  function renderWeightDetail() {
+    const sorted = weightData.slice().sort(cmpWeight);
+    if (sorted.length) {
+      const last = sorted[sorted.length - 1];
+      const prev = sorted.length > 1 ? sorted[sorted.length - 2] : null;
+      $("#wLatest").textContent = last.kg;
+      if (prev) {
+        const diff = last.kg - prev.kg;
+        $("#wChange").textContent = (diff >= 0 ? "+" : "") + diff.toFixed(1);
+        $("#wChange").style.color = diff <= 0 ? "var(--accent)" : "#c97a6d";
+      } else { $("#wChange").textContent = "--"; }
+      $("#wCount").textContent = sorted.length;
+    } else {
+      $("#wLatest").textContent = "--"; $("#wChange").textContent = "--"; $("#wCount").textContent = 0;
+    }
+    const series = filterWeight(weightData);
+    const chartEl = $("#weightChartFull");
+    if (series.length >= 1) {
+      const dates = []; const seen = {};
+      series.forEach((d) => { if (!seen[d.date]) { seen[d.date] = 1; dates.push(d.date); } });
+      dates.sort();
+      const W = 320, padX = 30, padY = 18, innerH = 150, axisH = 22;
+      const H = padY + innerH + axisH;
+      const ks = series.map((d) => d.kg);
+      let lo = Math.min.apply(null, ks), hi = Math.max.apply(null, ks);
+      if (expectWeight) { lo = Math.min(lo, expectWeight); hi = Math.max(hi, expectWeight); }
+      const span = (hi - lo) || 1;
+      lo -= span * 0.5; hi += span * 0.5;
+      const xOf = (dt) => padX + (dates.length <= 1 ? (W - padX - 12) / 2 : (W - padX - 12) * dates.indexOf(dt) / (dates.length - 1));
+      const yOf = (kg) => padY + innerH * (1 - (kg - lo) / (hi - lo));
+      let svg = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet">';
+      // 纵轴：坐标系风格——整数(1kg)为主网格+数值，0.1kg 为细分网格
+      for (let v = Math.ceil(lo * 10) / 10; v <= hi + 1e-6; v += 0.1) {
+        const rv = Math.round(v * 10) / 10;
+        const gy = yOf(rv);
+        if (gy < padY - 1 || gy > padY + innerH + 1) continue;
+        const isMajor = Math.abs(rv - Math.round(rv)) < 1e-6;
+        svg += '<line x1="' + padX + '" y1="' + gy + '" x2="' + (W - 12) + '" y2="' + gy + '" stroke="var(--border)" stroke-width="1" opacity="' + (isMajor ? 0.5 : 0.12) + '"/>';
+        if (isMajor) svg += '<text x="2" y="' + (gy + 3) + '" font-size="9" fill="var(--text-soft)">' + Math.round(rv) + '</text>';
+      }
+      // 预期线：细、弱、虚线
+      if (expectWeight) {
+        const ey = yOf(expectWeight);
+        svg += '<line x1="' + padX + '" y1="' + ey + '" x2="' + (W - 12) + '" y2="' + ey + '" stroke="var(--accent)" stroke-width="1" stroke-dasharray="5 4" opacity="0.38"/>';
+        svg += '<text x="' + (W - 14) + '" y="' + (ey - 4) + '" font-size="9" fill="var(--text-soft)" text-anchor="end">预期 ' + expectWeight + ' kg</text>';
+      }
+      // 各时段线条：细 + 半透明
+      PERIODS.forEach((p) => {
+        if (!wPeriodSel[p.key]) return;
+        const arr = series.filter((d) => d.period === p.key).sort((a, b) => (a.date < b.date ? -1 : 1));
+        const pts = arr.map((d) => ({ x: xOf(d.date), y: yOf(d.kg), date: d.date, kg: d.kg, period: d.period }));
+        if (pts.length) {
+          const linePts = pts.map((pt) => pt.x.toFixed(1) + "," + pt.y.toFixed(1)).join(" ");
+          svg += '<polyline points="' + linePts + '" fill="none" stroke="' + PERIOD_COLORS[p.key] + '" stroke-width="1.4" stroke-opacity="0.6" stroke-linejoin="round" stroke-linecap="round"/>';
+          pts.forEach((pt) => {
+            svg += '<circle cx="' + pt.x.toFixed(1) + '" cy="' + pt.y.toFixed(1) + '" r="3" fill="' + PERIOD_COLORS[p.key] + '" fill-opacity="0.8"/>';
+            svg += '<circle cx="' + pt.x.toFixed(1) + '" cy="' + pt.y.toFixed(1) + '" r="10" fill="transparent" class="wpt" data-date="' + pt.date + '" data-period="' + pt.period + '" data-kg="' + pt.kg + '"/>';
+          });
+        }
+      });
+      // 横轴日期
+      const maxLabels = 7;
+      const step = Math.max(1, Math.ceil(dates.length / maxLabels));
+      for (let i = 0; i < dates.length; i += step) {
+        svg += '<text x="' + xOf(dates[i]) + '" y="' + (H - 6) + '" font-size="8" fill="var(--text-soft)" text-anchor="middle">' + dates[i].slice(5) + '</text>';
+      }
+      if (dates.length && (dates.length - 1) % step !== 0) {
+        svg += '<text x="' + xOf(dates[dates.length - 1]) + '" y="' + (H - 6) + '" font-size="8" fill="var(--text-soft)" text-anchor="middle">' + dates[dates.length - 1].slice(5) + '</text>';
+      }
+      svg += '</svg>';
+      chartEl.innerHTML = svg;
+      chartEl.querySelectorAll(".wpt").forEach((c) => {
+        c.addEventListener("click", (e) => { e.stopPropagation(); showWTip(c); });
+      });
+    } else {
+      chartEl.innerHTML = '<div style="font-size:13px;color:var(--text-soft)">' + (weightData.length ? "当前筛选下没有记录" : "还没有记录") + "</div>";
+    }
+    const full = $("#weightTableFull");
+    if (!weightData.length) full.innerHTML = '<div style="font-size:13px;color:var(--text-soft)">还没有记录</div>';
+    else {
+      const tSeries = weightData.filter((d) => (!wRangeStart || d.date >= wRangeStart) && (!wRangeEnd || d.date <= wRangeEnd));
+      if (!tSeries.length) { full.innerHTML = '<div style="font-size:13px;color:var(--text-soft)">当前范围下没有记录</div>'; }
+      else {
+        const dates = []; const seen = {};
+        tSeries.forEach((d) => { if (!seen[d.date]) { seen[d.date] = 1; dates.push(d.date); } });
+        dates.sort().reverse();
+        const map = {};
+        tSeries.forEach((d) => { map[d.date + "|" + d.period] = d.kg; });
+        let html = '<table class="w-tbl"><thead><tr><th>日期</th>' + PERIODS.map((p) => '<th>' + p.label + "</th>").join("") + "</tr></thead><tbody>";
+        dates.forEach((dt) => {
+          html += '<tr><td class="w-date">' + dt + "</td>";
+          PERIODS.forEach((p) => {
+            const key = dt + "|" + p.key;
+            const kg = map[key];
+            if (key === wCellEdit) {
+              html += '<td class="w-cell editing">' +
+                '<input class="w-edit-input" type="number" step="0.1" min="0" value="' + (kg != null ? kg : "") + '" placeholder="kg" data-cell="' + key + '">' +
+                '<div class="w-edit-btns">' +
+                  '<button class="btn tiny" data-cact="save" data-cell="' + key + '">保存</button>' +
+                  (kg != null ? '<button class="btn tiny" data-cact="del" data-cell="' + key + '">删除</button>' : "") +
+                  '<button class="btn tiny" data-cact="cancel" data-cell="' + key + '">取消</button>' +
+                "</div></td>";
+            } else if (kg != null) {
+              html += '<td class="w-cell" data-cell="' + key + '">' + kg + "</td>";
+            } else {
+              html += '<td class="w-cell empty" data-cell="' + key + '">+</td>';
+            }
+          });
+          html += "</tr>";
+        });
+        html += "</tbody></table>";
+        full.innerHTML = html;
+        const inp = full.querySelector(".w-edit-input");
+        if (inp) inp.focus();
+      }
+    }
+  }
+  function showWTip(c) {
+    const tip = document.getElementById("wTip");
+    if (!tip) return;
+    tip.textContent = c.dataset.date + " " + periodMeta(c.dataset.period).label + " · " + c.dataset.kg + " kg";
+    const r = c.getBoundingClientRect();
+    tip.style.left = (r.left + r.width / 2) + "px";
+    tip.style.top = (r.top - 6) + "px";
+    tip.classList.add("show");
+  }
+  function saveExpect() {
+    const v = parseFloat($("#wExpectInput").value);
+    if (!v || v <= 0) { toast("请输入有效预期体重"); return; }
+    settings.expectWeight = v; persist(SET_KEY, settings);
+    expectWeight = v; renderWeightDetail(); refreshExpectToggle(); toast("已设定预期体重 " + v + " kg");
+  }
+  function clearExpect() {
+    settings.expectWeight = null; persist(SET_KEY, settings);
+    expectWeight = null; $("#wExpectInput").value = ""; renderWeightDetail(); refreshExpectToggle(); toast("已清除预期体重");
+  }
+  function refreshExpectToggle() {
+    $("#wExpectToggle").textContent = expectWeight ? ("⚙ 预期体重 " + expectWeight + " kg（点击修改）") : "⚙ 设置预期体重";
+  }
+  function addWeightRecord() {
+    const date = $("#wAddDate").value || dateKey(new Date());
+    const v = parseFloat($("#wAddKg").value);
+    if (!v || v <= 0) { toast("请输入有效体重"); return; }
+    const ex = weightData.find((d) => d.date === date && d.period === wAddPeriod);
+    if (ex) ex.kg = v; else weightData.push({ date: date, period: wAddPeriod, kg: v });
+    weightData.sort(cmpWeight);
+    persist(WEIGHT_KEY, weightData);
+    $("#wAddKg").value = "";
+    renderWeightDetail();
+    toast("已记录 " + date + " " + periodMeta(wAddPeriod).label + " 体重");
+  }
+
+  // ---------- settings drawer ----------
+  function openSet() {
+    $("#setTitle").value = settings.title || "";
+    $("#setSub").value = settings.sub || "";
+    $("#setDrawer").classList.add("show");
+  }
+  function saveBrand() {
+    settings.title = $("#setTitle").value.trim();
+    settings.sub = $("#setSub").value.trim();
+    persist(SET_KEY, settings);
+    applyBrand();
+    toast("已更新标题与签名");
+  }
+  function closeSet() { $("#setDrawer").classList.remove("show"); }
+
+  // ---------- pages ----------
+  function showPage(p) {
+    $("#page-record").style.display = p === "record" ? "" : "none";
+    $("#page-past").style.display = p === "past" ? "" : "none";
+    $("#page-weight").style.display = p === "weight" ? "" : "none";
+    document.querySelectorAll(".tab").forEach((b) => b.classList.toggle("active", b.dataset.page === p));
+    if (p === "past") render();
+    if (p === "weight") { $("#wAddDate").value = dateKey(new Date()); wAddPeriod = currentPeriod; document.querySelectorAll("#wAddPeriods .period").forEach((x) => x.classList.toggle("active", x.dataset.p === wAddPeriod)); wCellEdit = null; refreshExpectToggle(); syncChartPeriods(); renderWeightDetail(); }
+  }
+
+  // ---------- import / export ----------
+  function exportData() {
+    const payload = { notes: notes, weight: weightData };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = "小Bi碎碎念备份_" + dateKey(new Date()) + ".json"; a.click();
+    URL.revokeObjectURL(url); toast("已导出备份");
+  }
+  function importData(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        const impNotes = Array.isArray(data) ? data : (data.notes || []);
+        const impWeight = ((data && data.weight) || []).map((d) => (d && d.period ? d : Object.assign({ period: "shangwu" }, d)));
+        const merge = confirm("导入内容：碎碎念 " + impNotes.length + " 条、体重 " + impWeight.length + " 条。\n确定 = 合并；取消 = 替换");
+        if (merge) {
+          const ne = new Set(notes.map((n) => n.id));
+          impNotes.forEach((n) => { if (!ne.has(n.id)) notes.push(n); });
+          const we = new Set(weightData.map((w) => w.date + "|" + w.period));
+          impWeight.forEach((w) => { if (!we.has(w.date + "|" + w.period)) weightData.push(w); });
+        } else { notes = impNotes; weightData = impWeight; }
+        weightData.sort(cmpWeight);
+        persist(STORE_KEY, notes); persist(WEIGHT_KEY, weightData);
+        inlineEditId = null; render(); renderWeightInline(); toast("导入完成");
+      } catch (err) { toast("导入失败：文件格式有误"); }
+    };
+    reader.readAsText(file);
+  }
+
+  // ---------- bind ----------
+  contentEl.addEventListener("input", updateCount);
+  $("#saveBtn").addEventListener("click", saveNote);
+  cancelEditBtn.addEventListener("click", resetEditor);
+  searchEl.addEventListener("input", render);
+  $("#exportBtn").addEventListener("click", exportData);
+  $("#importBtn").addEventListener("click", () => $("#importFile").click());
+  $("#importFile").addEventListener("change", (e) => { if (e.target.files[0]) importData(e.target.files[0]); e.target.value = ""; });
+
+  $("#timeNow").addEventListener("click", () => {
+    const now = new Date();
+    dateInput.value = dateKey(now);
+    currentPeriod = periodByHour(now.getHours());
+    syncPeriodButtons();
+    renderWeightInline();
+  });
+  dateInput.addEventListener("input", renderWeightInline);
+  document.querySelectorAll("#periods .period").forEach((b) => b.addEventListener("click", () => setPeriod(b.dataset.p)));
+
+  $("#imgBtn").addEventListener("click", () => $("#imgInput").click());
+  $("#imgInput").addEventListener("change", (e) => { if (e.target.files.length) handleImgSelect(e.target.files); e.target.value = ""; });
+
+  $("#wInlineInput").addEventListener("keydown", (e) => { if (e.key === "Enter") saveNote(); });
+
+  $("#avatarBtn").addEventListener("click", openSet);
+  $("#setClose").addEventListener("click", closeSet);
+  $("#setTitle").addEventListener("input", saveBrand);
+  $("#setSub").addEventListener("input", saveBrand);
+  $("#setDrawer").addEventListener("click", (e) => { if (e.target === $("#setDrawer")) closeSet(); });
+
+  $("#wAddBtn").addEventListener("click", addWeightRecord);
+  $("#wAddDate").addEventListener("keydown", (e) => { if (e.key === "Enter") addWeightRecord(); });
+  $("#wAddKg").addEventListener("keydown", (e) => { if (e.key === "Enter") addWeightRecord(); });
+  document.querySelectorAll("#wAddPeriods .period").forEach((b) => b.addEventListener("click", () => {
+    wAddPeriod = b.dataset.p;
+    document.querySelectorAll("#wAddPeriods .period").forEach((x) => x.classList.toggle("active", x === b));
+  }));
+  document.querySelectorAll("#wChartPeriods .w-pf").forEach((b) => b.addEventListener("click", () => {
+    const p = b.dataset.p;
+    if (p === "all") {
+      const allOn = PERIODS.every((pp) => wPeriodSel[pp.key]);
+      PERIODS.forEach((pp) => wPeriodSel[pp.key] = !allOn);
+    } else {
+      wPeriodSel[p] = !wPeriodSel[p];
+    }
+    syncChartPeriods(); renderWeightDetail();
+  }));
+  $("#wExpectBtn").addEventListener("click", saveExpect);
+  $("#wExpectInput").addEventListener("keydown", (e) => { if (e.key === "Enter") saveExpect(); });
+  $("#wRangeStart").addEventListener("change", () => { wRangeStart = $("#wRangeStart").value; renderWeightDetail(); });
+  $("#wRangeEnd").addEventListener("change", () => { wRangeEnd = $("#wRangeEnd").value; renderWeightDetail(); });
+  $("#wRangeReset").addEventListener("click", () => { wRangeStart = ""; wRangeEnd = ""; $("#wRangeStart").value = ""; $("#wRangeEnd").value = ""; renderWeightDetail(); });
+  // 预期体重：折叠展开 + 清除
+  $("#wExpectToggle").addEventListener("click", () => {
+    const body = $("#wExpectBody");
+    const show = body.style.display === "none";
+    body.style.display = show ? "" : "none";
+    if (show) $("#wExpectInput").value = expectWeight || "";
+  });
+  $("#wExpectBtn").addEventListener("click", saveExpect);
+  $("#wExpectInput").addEventListener("keydown", (e) => { if (e.key === "Enter") saveExpect(); });
+  $("#wExpectClear").addEventListener("click", clearExpect);
+
+  // 体重表格：单元格点击编辑 / 新增 / 删除
+  $("#weightTableFull").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-cact]");
+    if (btn) {
+      const cell = btn.dataset.cell;
+      const parts = cell.split("|");
+      const ed = parts[0], ep = parts[1];
+      const act = btn.dataset.cact;
+      if (act === "cancel") { wCellEdit = null; renderWeightDetail(); }
+      else if (act === "del") {
+        weightData = weightData.filter((d) => !(d.date === ed && d.period === ep));
+        persist(WEIGHT_KEY, weightData); wCellEdit = null; renderWeightDetail(); toast("已删除该记录");
+      }
+      else if (act === "save") {
+        const inp = e.target.closest("td").querySelector(".w-edit-input");
+        const v = parseFloat(inp.value);
+        if (!v || v <= 0) { toast("请输入有效体重"); return; }
+        const ex = weightData.find((d) => d.date === ed && d.period === ep);
+        if (ex) ex.kg = v; else weightData.push({ date: ed, period: ep, kg: v });
+        weightData.sort(cmpWeight);
+        persist(WEIGHT_KEY, weightData); wCellEdit = null; renderWeightDetail();
+        toast("已保存 " + ed + " " + periodMeta(ep).label + " 体重");
+      }
+      return;
+    }
+    const cell = e.target.closest(".w-cell");
+    if (cell && cell.dataset.cell && cell.dataset.cell !== wCellEdit) { wCellEdit = cell.dataset.cell; renderWeightDetail(); }
+  });
+
+  $("#overlay").addEventListener("click", closeOverlay);
+  $("#overlayImg").addEventListener("click", (e) => e.stopPropagation());
+
+  document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => showPage(b.dataset.page)));
+
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); saveNote(); }
+    if (e.key === "Escape") { closeSet(); closeOverlay(); }
+  });
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".wpt")) { const t = document.getElementById("wTip"); if (t) t.classList.remove("show"); }
+  });
+
+  listEl.addEventListener("click", (e) => {
+    const per = e.target.closest(".period");
+    if (per && per.closest(".note.editing")) {
+      per.closest(".note.editing").querySelectorAll(".period").forEach((x) => x.classList.remove("active"));
+      per.classList.add("active");
+      return;
+    }
+    const actEl = e.target.closest("[data-act]");
+    if (actEl) {
+      const id = actEl.dataset.id; const act = actEl.dataset.act;
+      if (act === "edit") { inlineEditId = id; render(); }
+      else if (act === "wedit") {
+        const card = listEl.querySelector('.note.editing[data-id="' + id + '"]');
+        if (!card) return;
+        const n = notes.find((x) => x.id === id);
+        if (!n) return;
+        const dateVal = card.querySelector(".edit-date-input").value;
+        const activePer = card.querySelector(".period.active");
+        const periodKey = activePer ? activePer.dataset.p : tsToPeriodKey(n.createdAt);
+        const dateStr = dateKey(new Date(buildCreatedAt(dateVal, periodKey)));
+        const v = parseFloat(card.querySelector(".edit-weight-input").value);
+        if (!v || v <= 0) { toast("请输入有效体重"); return; }
+        const ex = weightData.find((dd) => dd.date === dateStr && dd.period === periodKey);
+        if (ex) ex.kg = v; else weightData.push({ date: dateStr, period: periodKey, kg: v });
+        weightData.sort(cmpWeight);
+        persist(WEIGHT_KEY, weightData);
+        toast("已记录 " + dateStr + " " + periodMeta(periodKey).label + " 体重");
+      }
+      else if (act === "save") { saveInline(id); }
+      else if (act === "cancel") { inlineEditId = null; render(); }
+      else if (act === "del") { deleteNote(id); }
+      return;
+    }
+    const img = e.target.closest(".note-img");
+    if (img) openOverlay(img.src);
+  });
+
+  // ---------- init ----------
+  buildThemeDots();
+  buildMoods();
+  applyTheme(settings.theme || "chenwu");
+  applyBrand();
+  render();
+  const initNow = new Date();
+  dateInput.value = dateKey(initNow);
+  currentPeriod = periodByHour(initNow.getHours());
+  syncPeriodButtons();
+  renderWeightInline();
+  showPage("record");
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "小Bi的碎碎念",
+  "short_name": "碎碎念",
+  "description": "随时记录碎碎念的个人日记本",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f1ec",
+  "theme_color": "#b4998a",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
