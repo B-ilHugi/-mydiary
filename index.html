@@ -83,14 +83,6 @@
   .btn.tiny { padding: 6px 12px; font-size: 12px; }
   .btn.block { display: block; width: 100%; margin-bottom: 10px; text-align: center; }
 
-  .moods { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-  .mood {
-    font-size: 20px; width: 40px; height: 40px; display: grid; place-items: center;
-    border-radius: 12px; border: 1px solid var(--border); background: var(--bg-soft);
-    cursor: pointer; transition: all .2s ease;
-  }
-  .mood:hover { transform: translateY(-2px); }
-  .mood.active { border-color: var(--accent); background: var(--accent-soft); }
 
   #title {
     width: 100%; border: none; background: transparent; font-size: 18px; font-weight: 600;
@@ -226,8 +218,8 @@
   .tab.active { background: var(--accent); color: #fff; }
 
   /* ---------- weight page ---------- */
-  .w-filter { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
-  .w-periods { display: inline-flex; gap: 5px; flex-wrap: wrap; }
+  .w-filter { display: flex; flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 14px; }
+  .w-periods { display: flex; flex-wrap: wrap; gap: 5px; row-gap: 6px; }
   .w-pf {
     border: 1px solid var(--border); background: var(--accent-soft); color: var(--text-soft);
     padding: 5px 13px; border-radius: 999px; font-size: 12px; cursor: pointer; font-family: var(--font);
@@ -235,10 +227,15 @@
   }
   .w-pf:hover { opacity: .85; color: var(--accent); }
   .w-pf.active { opacity: 1; background: var(--accent); color: #fff; border-color: var(--accent); }
-  .w-range { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .w-range-date { border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 5px 8px; font-size: 12px; color: var(--text); font-family: var(--font); }
+  .w-range { display: flex; align-items: center; gap: 6px; }
+  .w-range-date { flex: 1 1 110px; min-width: 110px; max-width: 170px; border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 5px 8px; font-size: 12px; color: var(--text); font-family: var(--font); }
   .w-range-date:focus { outline: none; border-color: var(--accent); }
-  .w-dash { color: var(--text-soft); }
+  .w-dash { color: var(--text-soft); flex: none; }
+  @media (min-width: 520px) {
+    .w-filter { flex-direction: row; justify-content: space-between; align-items: center; }
+    .w-range { flex-wrap: nowrap; }
+    .w-range-date { flex: 0 0 auto; min-width: 116px; }
+  }
 
   /* ---------- settings drawer ---------- */
   .drawer {
@@ -271,12 +268,20 @@
   .w-summary > div { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 6px; text-align: center; }
   .w-summary .num { font-size: 20px; font-weight: 600; color: var(--accent); }
   .w-summary .lbl { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
-  .w-add { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
-  .w-add .periods { flex-wrap: nowrap; }
+  .w-add { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .w-add .periods { display: flex; flex-wrap: wrap; gap: 4px; width: 100%; order: 3; margin-top: 2px; }
   .w-add .period { padding: 5px 9px; font-size: 11px; white-space: nowrap; }
-  .w-add-date { width: 120px; flex: 0 0 auto; border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 8px 10px; font-size: 13px; color: var(--text); font-family: var(--font); }
-  .w-add-kg { width: 64px; border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 8px 10px; font-size: 13px; color: var(--text); font-family: var(--font); }
+  .w-add-date { order: 1; flex: 1 1 110px; min-width: 110px; max-width: 160px; border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 8px 10px; font-size: 13px; color: var(--text); font-family: var(--font); }
+  .w-add-kg { order: 2; width: 64px; flex: none; border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 8px 10px; font-size: 13px; color: var(--text); font-family: var(--font); }
+  .w-add #wAddBtn { order: 4; flex: none; }
   .w-add-date:focus, .w-add-kg:focus { outline: none; border-color: var(--accent); }
+  @media (min-width: 480px) {
+    .w-add { flex-wrap: nowrap; }
+    .w-add .periods { width: auto; order: 0; margin-top: 0; flex-wrap: nowrap; }
+    .w-add-date { order: 0; width: 120px; flex: 0 0 auto; }
+    .w-add-kg { order: 0; }
+    .w-add #wAddBtn { order: 0; }
+  }
   .w-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; padding: 9px 2px; border-bottom: 1px dashed var(--border); }
   .w-row .w-kg { color: var(--accent); font-weight: 600; }
   .w-row .w-del { border: none; background: transparent; color: var(--text-soft); cursor: pointer; font-size: 14px; padding: 2px 6px; }
@@ -333,7 +338,6 @@
         </span>
         <button class="btn tiny" id="timeNow">此刻</button>
       </div>
-      <div class="moods" id="moods"></div>
       <input id="title" type="text" placeholder="标题" />
       <textarea id="content" placeholder="这一刻，你在想什么……"></textarea>
       <div class="draft-imgs" id="draftImgs"></div>
@@ -477,8 +481,6 @@
     yemo:   { name: "夜墨", vars: { "--bg":"#26262a","--bg-soft":"#303036","--card":"#323238","--text":"#dcD9d2","--text-soft":"#9a958c","--border":"#42424a","--accent":"#a89c8e","--accent-soft":"rgba(168,156,142,0.16)","--shadow":"0 8px 28px rgba(0,0,0,0.30)" } }
   };
 
-  const MOODS = ["😊","☺️","😌","🥲","😴","🌿","✨","💭"];
-
   // ---------- state ----------
   let notes = load(STORE_KEY, []);
   let weightData = load(WEIGHT_KEY, []);
@@ -497,7 +499,6 @@
   const countEl = $("#count");
   const listEl = $("#list");
   const searchEl = $("#search");
-  const moodsEl = $("#moods");
   const cancelEditBtn = $("#cancelEdit");
   const editorMode = $("#editorMode");
   const draftImgsEl = $("#draftImgs");
@@ -595,18 +596,6 @@
   }
 
   // ---------- moods ----------
-  function buildMoods() {
-    MOODS.forEach((m) => {
-      const el = document.createElement("div");
-      el.className = "mood"; el.textContent = m;
-      el.addEventListener("click", () => {
-        if (currentMood === m) { currentMood = null; el.classList.remove("active"); }
-        else { currentMood = m; document.querySelectorAll(".mood").forEach((x) => x.classList.remove("active")); el.classList.add("active"); }
-      });
-      moodsEl.appendChild(el);
-    });
-  }
-
   // ---------- image ----------
   function compressImage(file) {
     return new Promise((res, rej) => {
@@ -1150,7 +1139,6 @@
 
   // ---------- init ----------
   buildThemeDots();
-  buildMoods();
   applyTheme(settings.theme || "chenwu");
   applyBrand();
   render();
