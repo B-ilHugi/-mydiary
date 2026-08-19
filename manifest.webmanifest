@@ -1,6 +1,6 @@
 {
-  "name": "小Bi的碎碎念",
-  "short_name": "碎碎念",
+  "name": "Diary",
+  "short_name": "Diary",
   "description": "随时记录碎碎念的个人日记本",
   "start_url": ".",
   "scope": ".",
